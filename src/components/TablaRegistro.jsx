@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 
-export const TablaRegistro = ({ setEditar, handleEditar, handleDelete }) => {
+export const TablaRegistro = ({ setEditar, handleEditar, handleDelete, data }) => {
 
 
   const [datos, setDatos] = useState([]);
@@ -12,24 +12,27 @@ export const TablaRegistro = ({ setEditar, handleEditar, handleDelete }) => {
   const usuariosPorPagina = 5;
 
   useEffect(() => {
-    const fetchDataUsuarios = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/registro");
-        if (!response.ok) {
-          throw new Error("No se pudieron obtener los datos");
-        }
+    setDatos(data)    
+  }, [data]);
+  // useEffect(() => {
+  //   fetchDataUsuarios()    
+  // }, []);
 
-        const data = await response.json();
-        // Ordenar los datos por ID en orden descendente
-        data.sort((a, b) => b.id_usuario - a.id_usuario);
-        setDatos(data);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
+  // const fetchDataUsuarios = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:4000/api/registro");
+  //     if (!response.ok) {
+  //       throw new Error("No se pudieron obtener los datos");
+  //     }
 
-    fetchDataUsuarios();
-  }, [datos]);
+  //     const data = await response.json();
+  //     // Ordenar los datos por ID en orden descendente
+  //     data.sort((a, b) => b.id_usuario - a.id_usuario);      
+  //     setDatos(data);
+  //   } catch (error) {
+  //     setError(error.message);
+  //   }
+  // };
 
   const paginacion = () => {
     const pageCount = Math.ceil(datos.length / usuariosPorPagina);

@@ -52,7 +52,8 @@ export const FormularioRegistro = ({
             </option>
             <option value="admin">Administrador</option>
             <option value="recepcionista">Recepcionista</option>
-            <option value="finanzas">Finanzas</option>
+            <option value="contabilidad">Contabilidad</option>
+            <option value="medico">Medico</option>
           </select>
         </div>
         <div>

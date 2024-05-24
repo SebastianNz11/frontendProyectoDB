@@ -1,21 +1,58 @@
 import { FormularioRegistro } from "./FormularioRegistro";
 import { TablaRegistro } from "../components/TablaRegistro";
 import { Navbar } from "./Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Registro = () => {
+  const navigate = useNavigate();
   const [id, setId] = useState("");
   const [nombre, setNombre] = useState("");
   const [contrasenia, setContrasenia] = useState("");
   const [rol, setRol] = useState("");
   const [editar, setEditar] = useState(false);
   const [errors, setErrors] = useState("");
+  const [dataListado, setdataListado] = useState([])
 
   const clear = () => {
     setNombre("");
     setContrasenia("");
     setRol("");
   };
+
+  useEffect(() => {
+    fetchDataUsuarios()
+  }, []);
+
+  const fetchDataUsuarios = async () => {
+    try {
+      //const response = await fetch("http://localhost:4000/api/registro");
+      const response = await fetch("http://localhost:4000/api/registro", {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      // console.log(response.status)
+      // if (response.status == 401) {
+      //   setAuth({ isAuthenticated: false, role: null });
+      //   navigate("/");
+      //   throw new Error("Autenticarse");
+      // }
+      if (!response.ok) {
+        throw new Error("No se pudieron obtener los datos");
+      }
+
+      const data = await response.json();
+      // Ordenar los datos por ID en orden descendente
+      data.sort((a, b) => b.id_usuario - a.id_usuario);
+      setdataListado(data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
 
   // Función para enviar usuarios al backend
   const handleSubmit = async (e) => {
@@ -31,11 +68,12 @@ export const Registro = () => {
       if (!response.ok) {
         throw new Error("Error al enviar los datos");
       }
-
+      fetchDataUsuarios()
       // Limpiar los campos del formulario después de enviarlo
       setNombre("");
       setContrasenia("");
       setRol("");
+
     } catch (error) {
       setErrors(error.message);
     }
@@ -128,6 +166,7 @@ export const Registro = () => {
           <div className="col-8">
             <TablaRegistro
               setEditar={setEditar}
+              data={dataListado}
               handleEditar={handleEditar}
               handleDelete={handleDelete}
             />

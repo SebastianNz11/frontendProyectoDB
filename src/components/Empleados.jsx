@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormularioEmpleados } from "./FormularioEmpleados";
 import { Navbar } from "./Navbar";
 import { TablaEmpleados } from "./TablaEmpleados";
@@ -7,6 +7,29 @@ export const Empleados = () => {
   const [errors, setErrors] = useState("");
   const [editar, setEditar] = useState(false);
   const [datos, setDatos] = useState(null);
+  const [listado, setListado] = useState([])
+
+
+
+  useEffect(() => {
+    fetchDataEmpleados();
+  }, []);
+
+  const fetchDataEmpleados = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/api/empleados");
+      if (!response.ok) {
+        throw new Error("No se pudieron obtener los datos");
+      }
+
+      const data = await response.json();
+      // Ordenar los datos por ID en orden descendente
+      data.sort((a, b) => b.id_empleado - a.id_empleado);
+      setListado(data);
+    } catch (error) {
+      //setError(error.message);
+    }
+  };
 
   //funcion para insertar empleados
   const handleInsert = async (data) => {
@@ -22,6 +45,7 @@ export const Empleados = () => {
       if (!info.ok) {
         throw new Error("Error al enviar los datos");
       }
+      fetchDataEmpleados();
     } catch (error) {
       setErrors(error.message);
     }
@@ -42,6 +66,8 @@ export const Empleados = () => {
       }
 
       console.log("Empleado eliminado exitosamente");
+      fetchDataEmpleados();
+
     } catch (error) {
       setErrors(error.message);
     }
@@ -76,6 +102,7 @@ export const Empleados = () => {
           body: JSON.stringify({ nombre, apellido, empleado, salario }),
         }
       );
+      fetchDataEmpleados();
 
       if (!datos.ok) {
         throw new Error("Error al obtener los datos del servidor");
@@ -104,6 +131,7 @@ export const Empleados = () => {
               handleDelete={handleDelete}
               getEmpleadoById={getEmpleadoById}
               setEditar={setEditar}
+              data={listado}
             />
           </div>
         </div>

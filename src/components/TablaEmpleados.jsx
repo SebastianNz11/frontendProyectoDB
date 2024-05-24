@@ -11,6 +11,7 @@ export const TablaEmpleados = ({
   getEmpleadoById,
   handleEditar,
   handleDelete,
+  data
 }) => {
   const [datos, setDatos] = useState([]);
   const [error, setError] = useState(null);
@@ -19,24 +20,10 @@ export const TablaEmpleados = ({
   const empleadosPorPagina = 5;
 
   useEffect(() => {
-    const fetchDataEmpleados = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/empleados");
-        if (!response.ok) {
-          throw new Error("No se pudieron obtener los datos");
-        }
+    setDatos(data)
+  }, [data])
 
-        const data = await response.json();
-        // Ordenar los datos por ID en orden descendente
-        data.sort((a, b) => b.id_empleado - a.id_empleado);
-        setDatos(data);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
 
-    fetchDataEmpleados();
-  }, [datos]);
 
   const paginacion = () => {
     const pageCount = Math.ceil(datos.length / empleadosPorPagina);

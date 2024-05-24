@@ -12,7 +12,7 @@ export const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     setAuth({ isAuthenticated: false, role: null });
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -168,7 +168,7 @@ export const Navbar = () => {
                   </>
                 )}
                 <li className="nav-item">
-                  <button className="btn btn-outline-danger my-2 my-sm-0" onClick={handleLogout}>
+                  <button className="btn btn-danger my-2 my-sm-0" onClick={handleLogout}>
                     Logout
                   </button>
                 </li>
